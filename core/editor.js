@@ -30,6 +30,9 @@
 		// Call the CKEDITOR.event constructor to initialize this instance.
 		CKEDITOR.event.call( this );
 
+		// Make a clone of the config object, to avoid having it touched by our code. (#9636)
+		instanceConfig = instanceConfig && CKEDITOR.tools.clone( instanceConfig );
+
 		// if editor is created off one page element.
 		if ( element !== undefined ) {
 			// Asserting element and mode not null.
@@ -378,14 +381,14 @@
 
 		if ( extraPlugins ) {
 			// Remove them first to avoid duplications.
-			var removeRegex = new RegExp( '(?:^|,)(?:' + extraPlugins.replace( /\s*,\s*/g, '|' ) + ')(?=,|$)', 'g' );
-			plugins = plugins.replace( removeRegex, '' );
+			var extraRegex = new RegExp( '(?:^|,)(?:' + extraPlugins.replace( /\s*,\s*/g, '|' ) + ')(?=,|$)', 'g' );
+			plugins = plugins.replace( extraRegex, '' );
 
 			plugins += ',' + extraPlugins;
 		}
 
 		if ( removePlugins ) {
-			removeRegex = new RegExp( '(?:^|,)(?:' + removePlugins.replace( /\s*,\s*/g, '|' ) + ')(?=,|$)', 'g' );
+			var removeRegex = new RegExp( '(?:^|,)(?:' + removePlugins.replace( /\s*,\s*/g, '|' ) + ')(?=,|$)', 'g' );
 			plugins = plugins.replace( removeRegex, '' );
 		}
 
@@ -445,8 +448,21 @@
 						pluginLangs = pluginLangs.split( ',' );
 
 					// Resolve the plugin language. If the current language
-					// is not available, get the first one (default one).
-					lang = ( CKEDITOR.tools.indexOf( pluginLangs, editor.langCode ) >= 0 ? editor.langCode : pluginLangs[ 0 ] );
+					// is not available, get English or the first one.
+					if ( CKEDITOR.tools.indexOf( pluginLangs, editor.langCode ) >= 0 )
+						lang = editor.langCode;
+					else {
+						// The language code may have the locale information (zh-cn).
+						// Fall back to locale-less in that case (zh).
+						var langPart = editor.langCode.replace( /-.*/, '' );
+						if ( langPart != editor.langCode && CKEDITOR.tools.indexOf( pluginLangs, langPart ) >= 0 )
+							lang = langPart;
+						// Try the only "generic" option we have: English.
+						else if ( CKEDITOR.tools.indexOf( pluginLangs, 'en' ) >= 0 )
+							lang = 'en';
+						else
+							lang = pluginLangs[ 0 ];
+					}
 
 					if ( !plugin.langEntries || !plugin.langEntries[ lang ] ) {
 						// Put the language file URL into the list of files to

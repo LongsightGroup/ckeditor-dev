@@ -166,9 +166,10 @@
 
 		// Build the list of text blocks.
 		var textBlockTags = CKEDITOR.tools.extend( {}, blockLikeTags );
-		for ( var i in textBlockTags )
+		for ( var i in textBlockTags ) {
 			if ( !( '#' in dtd[ i ] ) )
 				delete textBlockTags[ i ];
+		}
 
 		for ( i in textBlockTags )
 			rules.elements[ i ] = blockFilter( isOutput, editor.config.fillEmptyBlocks !== false );
@@ -177,7 +178,6 @@
 		rules.root = blockFilter( isOutput );
 		rules.elements.br = brFilter( isOutput );
 		return rules;
-
 
 		function createFiller( isOutput ) {
 			return isOutput || CKEDITOR.env.ie ?
@@ -196,9 +196,9 @@
 
 				cleanBogus( block );
 
-				// It's mandatory for the filler to present inside of empty block when in WYSIWYG.
-				if ( ( !isOutput ||
-						 ( typeof fillEmptyBlock == 'function' ? fillEmptyBlock( block ) !== false : fillEmptyBlock ) ) &&
+				// [Opera] it's mandatory for the filler to present inside of empty block when in WYSIWYG.
+				if ( ( ( CKEDITOR.env.opera && !isOutput ) ||
+						( typeof fillEmptyBlock == 'function' ? fillEmptyBlock( block ) !== false : fillEmptyBlock ) ) &&
 						 isEmptyBlockNeedFiller( block ) )
 				{
 					block.add( createFiller( isOutput ) );
@@ -230,7 +230,7 @@
 				else if ( isBlockBoundary( next ) && previous && !isBlockBoundary( previous ) ) {
 					insertBefore( next, createFiller( isOutput ) );
 				}
-			}
+			};
 		}
 
 		// Determinate whether this node is potentially a bogus node.
@@ -605,7 +605,7 @@
 		}
 	}
 	// Disable form elements editing mode provided by some browers. (#5746)
-	for ( i in { input:1,textarea:1 } ) {
+	for ( var i in { input:1,textarea:1 } ) {
 		defaultDataFilterRules.elements[ i ] = protectReadOnly;
 		defaultHtmlFilterRules.elements[ i ] = unprotectReadyOnly;
 	}
@@ -659,7 +659,7 @@
 	}
 
 	function protectPreFormatted( html ) {
-		return html.replace( /(<pre\b[^>]*>)(\r\n|\n)/g, '$1$2$2' );
+		return CKEDITOR.env.opera ? html : html.replace( /(<pre\b[^>]*>)(\r\n|\n)/g, '$1$2$2' );
 	}
 
 	function protectRealComments( html ) {

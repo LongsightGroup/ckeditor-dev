@@ -22,6 +22,7 @@ CKEDITOR.editorConfig = function( config ) {
 		'elementspath,' +
 		'enterkey,' +
 		'entities,' +
+		'filebrowser,'+
 		'find,' +
 		'filebrowser,' +
 		'flash,' +
@@ -37,6 +38,7 @@ CKEDITOR.editorConfig = function( config ) {
 		'justify,' +
 		'link,' +
 		'list,' +
+		'liststyle,' +
 		'magicline,' +
 		'maximize,' +
 		'newpage,' +
@@ -48,7 +50,6 @@ CKEDITOR.editorConfig = function( config ) {
 		'removeformat,' +
 		'resize,' +
 		'save,' +
-		'scayt,' +
 		'selectall,' +
 		'showblocks,' +
 		'showborders,' +
@@ -62,7 +63,6 @@ CKEDITOR.editorConfig = function( config ) {
 		'templates,' +
 		'toolbar,' +
 		'undo,' +
-		'wsc,' +
 		'wysiwygarea';
 	// %REMOVE_END%
 };

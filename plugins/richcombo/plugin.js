@@ -249,7 +249,7 @@ CKEDITOR.plugins.add( 'richcombo', {
 
 					me.setState( CKEDITOR.TRISTATE_ON );
 
-					list.focus( !me.multiSelect && me.getValue() );
+					list.focus( !list.multiSelect && me.getValue() );
 
 					me._.on = 1;
 
@@ -360,6 +360,18 @@ CKEDITOR.plugins.add( 'richcombo', {
 				el.setState( state, 'cke_combo' );
 
 				this._.state = state;
+			},
+
+			enable: function() {
+				if ( this._.state == CKEDITOR.TRISTATE_DISABLED )
+					this.setState( this._.lastState );
+			},
+
+			disable: function() {
+				if ( this._.state != CKEDITOR.TRISTATE_DISABLED ) {
+					this._.lastState = this._.state;
+					this.setState( CKEDITOR.TRISTATE_DISABLED );
+				}
 			}
 		},
 

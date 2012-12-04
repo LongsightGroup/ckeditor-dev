@@ -211,9 +211,9 @@
 					lastSel.lock();
 				}
 
-				// For IE, we can retrieve the last correct DOM selection upon the "beforedeactivate" event.
+				// For old IEs, we can retrieve the last correct DOM selection upon the "beforedeactivate" event.
 				// For the rest, a more frequent check is required for each selection change made.
-				if ( CKEDITOR.env.ie )
+				if ( isMSSelection )
 					editable.attachListener( editable, 'beforedeactivate', saveSel, null, null, -1 );
 				else
 					editable.attachListener( editor, 'selectionCheck', saveSel, null, null, -1 );
@@ -324,7 +324,7 @@
 							if ( evt.data.getTarget().is( 'html' ) ) {
 								// Limit the text selection mouse move inside of editable. (#9715)
 								outerDoc.on( 'mouseup', onSelectEnd );
-								html.on( 'mouseup', onSelectEnd )
+								html.on( 'mouseup', onSelectEnd );
 							}
 
 						});
@@ -405,6 +405,12 @@
 		CKEDITOR.env.ie9Compat && editor.on( 'beforeDestroy', clearSelection, null, null, 9 );
 		// Webkit's selection will mess up after the data loading.
 		CKEDITOR.env.webkit && editor.on( 'setData', clearSelection );
+
+		// Invalidate locked selection when unloading DOM (e.g. after setData). (#9521)
+		editor.on( 'contentDomUnload', function() {
+			editor.unlockSelection();
+		});
+
 	});
 
 	CKEDITOR.on( 'instanceReady', function( evt ) {
@@ -571,12 +577,15 @@
 	 * Select this range as the only one with {@link CKEDITOR.dom.selection#selectRanges}.
 	 *
 	 * @method
+	 * @returns {CKEDITOR.dom.selection}
 	 * @member CKEDITOR.dom.range
 	 */
 	CKEDITOR.dom.range.prototype.select = function() {
 		var sel = this.root instanceof CKEDITOR.editable ? this.root.editor.getSelection() : new CKEDITOR.dom.selection( this.root );
 
 		sel.selectRanges( [ this ] );
+
+		return sel;
 	};
 
 	/**
@@ -614,6 +623,8 @@
 	 * @member CKEDITOR
 	 */
 	CKEDITOR.SELECTION_ELEMENT = 3;
+
+	var isMSSelection = typeof window.getSelection != 'function';
 
 	/**
 	 * Manipulates the selection within a DOM element, if the current browser selection
@@ -698,7 +709,7 @@
 			if ( this._.cache.nativeSel !== undefined )
 				return this._.cache.nativeSel;
 
-			return ( this._.cache.nativeSel = this.document.$.selection || this.document.getWindow().$.getSelection() );
+			return ( this._.cache.nativeSel = isMSSelection ? this.document.$.selection : this.document.getWindow().$.getSelection() );
 		},
 
 		/**
@@ -718,7 +729,7 @@
 		 * @returns {Number} One of the following constant values: {@link CKEDITOR#SELECTION_NONE},
 		 * {@link CKEDITOR#SELECTION_TEXT} or {@link CKEDITOR#SELECTION_ELEMENT}.
 		 */
-		getType: CKEDITOR.env.ie ?
+		getType: isMSSelection ?
 		function() {
 			var cache = this._.cache;
 			if ( cache.type )
@@ -785,7 +796,7 @@
 		 * @returns {Array} Range instances that represent the current selection.
 		 */
 		getRanges: (function() {
-			var func = CKEDITOR.env.ie ? ( function() {
+			var func = isMSSelection ? ( function() {
 				function getNodeIndex( node ) {
 					return new CKEDITOR.dom.node( node ).getIndex();
 				}
@@ -1208,7 +1219,7 @@
 				return cache.selectedText;
 
 			var nativeSel = this.getNative(),
-				text = CKEDITOR.env.ie ? nativeSel.type == 'Control' ? '' : nativeSel.createRange().text : nativeSel.toString();
+				text = isMSSelection ? nativeSel.type == 'Control' ? '' : nativeSel.createRange().text : nativeSel.toString();
 
 			return ( cache.selectedText = text );
 		},
@@ -1289,7 +1300,9 @@
 		/**
 		 * Clears the original selection and adds the specified ranges to the document selection.
 		 *
-		 *		var ranges = new CKEDITOR.dom.range( editor.document );
+		 * 		// Move selection to the end of the editable element.
+		 *		var range = editor.createRange();
+		 *		range.moveToPosition( range.root, CKEDITOR.POSITION_BEFORE_END );
 		 *		editor.getSelection().selectRanges( [ ranges ] );
 		 *
 		 * @param {Array} ranges An array of {@link CKEDITOR.dom.range} instances
@@ -1312,7 +1325,7 @@
 				return;
 			}
 
-			if ( CKEDITOR.env.ie ) {
+			if ( isMSSelection ) {
 				var notWhitespaces = CKEDITOR.dom.walker.whitespaces( true ),
 					fillerTextRegex = /\ufeff|\u00a0/,
 					nonCells = { table:1,tbody:1,tr:1 };
@@ -1437,7 +1450,7 @@
 					sel.addRange( nativeRng );
 				}
 
-				sel.removeAllRanges();
+				this.removeAllRanges();
 
 				for ( var i = 0; i < ranges.length; i++ ) {
 					// Joining sequential ranges introduced by
@@ -1482,9 +1495,8 @@
 							rightSib = startContainer.getChild( range.startOffset );
 
 						if ( !leftSib && !rightSib && startContainer.is( CKEDITOR.dtd.$removeEmpty ) ||
-								 leftSib && leftSib.type == CKEDITOR.NODE_ELEMENT && leftSib.isEditable() ||
-								 rightSib && rightSib.type == CKEDITOR.NODE_ELEMENT && rightSib.isEditable()
-							 ) {
+								 leftSib && leftSib.type == CKEDITOR.NODE_ELEMENT ||
+								 rightSib && rightSib.type == CKEDITOR.NODE_ELEMENT ) {
 							range.insertNode( this.document.createText( '' ) );
 							range.collapse( 1 );
 						}
@@ -1614,7 +1626,8 @@
 		removeAllRanges: function() {
 			var nativ = this.getNative();
 
-			nativ && nativ[ nativ.removeAllRanges ? 'removeAllRanges' : 'empty' ]();
+			try { nativ && nativ[ isMSSelection ? 'empty' : 'removeAllRanges' ](); }
+			catch(er){}
 
 			this.reset();
 		}
