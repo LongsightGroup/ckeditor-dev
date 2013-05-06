@@ -1,5 +1,5 @@
 ﻿/**
- * @license Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.html or http://ckeditor.com/license
  */
 
@@ -124,6 +124,7 @@
 			 *
 			 * @event updateSnapshot
 			 * @member CKEDITOR.editor
+ 			 * @param {CKEDITOR.editor} editor This editor instance.
 			 */
 			editor.on( 'updateSnapshot', function() {
 				if ( undoManager.currentImage )
@@ -138,16 +139,20 @@
 			 *
 			 * See {@link CKEDITOR.plugins.undo.UndoManager#lock} for more details.
 			 *
+			 * @since 4.0
 			 * @event lockSnapshot
 			 * @member CKEDITOR.editor
+ 			 * @param {CKEDITOR.editor} editor This editor instance.
 			 */
 			editor.on( 'lockSnapshot', undoManager.lock, undoManager );
 
 			/**
 			 * Unlock manager and update latest snapshot.
 			 *
+			 * @since 4.0
 			 * @event unlockSnapshot
 			 * @member CKEDITOR.editor
+ 			 * @param {CKEDITOR.editor} editor This editor instance.
 			 */
 			editor.on( 'unlockSnapshot', undoManager.unlock, undoManager );
 		}
@@ -559,6 +564,8 @@
 		 * after the {@link #unlock} method is called.
 		 *
 		 * It's mainly used for ensure any DOM operations that shouldn't be recorded (e.g. auto paragraphing).
+		 *
+		 * @since 4.0
 		 */
 		lock: function() {
 			if ( !this.locked ) {
@@ -577,6 +584,8 @@
 		 * Unlock the snapshot stack and check to amend the last snapshot.
 		 *
 		 * See {@link #lock} for more details.
+		 *
+		 * @since 4.0
 		 */
 		unlock: function() {
 			if ( this.locked ) {
@@ -608,6 +617,7 @@
  *
  * @event saveSnapshot
  * @member CKEDITOR.editor
+ * @param {CKEDITOR.editor} editor This editor instance.
  */
 
 /**
@@ -618,6 +628,7 @@
  * @since 3.5.3
  * @event beforeUndoImage
  * @member CKEDITOR.editor
+ * @param {CKEDITOR.editor} editor This editor instance.
  * @see CKEDITOR.editor#afterUndoImage
  */
 
@@ -629,5 +640,6 @@
  * @since 3.5.3
  * @event afterUndoImage
  * @member CKEDITOR.editor
+ * @param {CKEDITOR.editor} editor This editor instance.
  * @see CKEDITOR.editor#beforeUndoImage
  */

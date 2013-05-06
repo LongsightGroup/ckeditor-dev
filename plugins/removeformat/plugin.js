@@ -1,5 +1,5 @@
 ﻿/**
- * @license Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.html or http://ckeditor.com/license
  */
 
@@ -13,8 +13,6 @@ CKEDITOR.plugins.add( 'removeformat', {
 			command: 'removeFormat',
 			toolbar: 'cleanup,10'
 		});
-
-		editor._.removeFormat = { filters: [] };
 	}
 });
 
@@ -113,7 +111,8 @@ CKEDITOR.plugins.removeformat = {
 	// @param {CKEDITOR.editor} editor
 	// @param {CKEDITOR.dom.element} element
 	filter: function( editor, element ) {
-		var filters = editor._.removeFormat.filters;
+		// If editor#addRemoveFotmatFilter hasn't been executed yet value is not initialized.
+		var filters = editor._.removeFormatFilters || [];
 		for ( var i = 0; i < filters.length; i++ ) {
 			if ( filters[ i ]( element ) === false )
 				return false;
@@ -129,8 +128,8 @@ CKEDITOR.plugins.removeformat = {
  *
  * **Note:** Only available with the existence of `removeformat` plugin.
  *
- *		// Don't remove empty span
- *		editor.addRemoveFormatFilter.push( function( element ) {
+ *		// Don't remove empty span.
+ *		editor.addRemoveFormatFilter( function( element ) {
  *			return !( element.is( 'span' ) && CKEDITOR.tools.isEmpty( element.getAttributes() ) );
  *		} );
  *
@@ -139,7 +138,10 @@ CKEDITOR.plugins.removeformat = {
  * @param {Function} func The function to be called, which will be passed a {CKEDITOR.dom.element} element to test.
  */
 CKEDITOR.editor.prototype.addRemoveFormatFilter = function( func ) {
-	this._.removeFormat.filters.push( func );
+	if ( !this._.removeFormatFilters )
+		this._.removeFormatFilters = [];
+
+	this._.removeFormatFilters.push( func );
 };
 
 /**
@@ -165,6 +167,7 @@ CKEDITOR.config.removeFormatAttributes = 'class,style,lang,width,height,align,hs
  *
  * @event removeFormatCleanup
  * @member CKEDITOR.editor
+ * @param {CKEDITOR.editor} editor This editor instance.
  * @param data
  * @param {CKEDITOR.dom.element} data.element The element that was cleaned up.
  */

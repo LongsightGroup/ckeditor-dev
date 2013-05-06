@@ -1,5 +1,5 @@
 ﻿/**
- * @license Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.html or http://ckeditor.com/license
  */
 
@@ -292,6 +292,15 @@
 
 			if ( element ) {
 				element.setState( state, 'cke_button' );
+
+				state == CKEDITOR.TRISTATE_DISABLED ?
+					element.setAttribute( 'aria-disabled', true ) :
+					element.removeAttribute( 'aria-disabled' );
+
+				state == CKEDITOR.TRISTATE_ON ?
+					element.setAttribute( 'aria-pressed', true ) :
+					element.removeAttribute( 'aria-pressed' );
+
 				return true;
 			} else
 				return false;

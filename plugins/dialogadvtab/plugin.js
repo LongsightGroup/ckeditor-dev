@@ -1,5 +1,5 @@
 ﻿/**
- * @license Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.html or http://ckeditor.com/license
  */
 
@@ -114,7 +114,7 @@
 						onChange: function() {},
 
 						getStyle: function( name, defaultValue ) {
-							var match = this.getValue().match( new RegExp( name + '\\s*:\\s*([^;]*)', 'i' ) );
+							var match = this.getValue().match( new RegExp( '(?:^|;)\\s*' + name + '\\s*:\\s*([^;]*)', 'i' ) );
 							return match ? match[ 1 ] : defaultValue;
 						},
 

@@ -1,5 +1,5 @@
 ﻿/**
- * @license Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.html or http://ckeditor.com/license
  */
 
@@ -44,7 +44,7 @@ CKEDITOR.command = function( editor, commandDefinition ) {
 			return false;
 
 		if ( this.editorFocus ) // Give editor focus if necessary (#4355).
-		editor.focus();
+			editor.focus();
 
 		if ( this.fire( 'exec' ) === false )
 			return true;
@@ -209,7 +209,7 @@ CKEDITOR.command.prototype = {
 	}
 };
 
-CKEDITOR.event.implementOn( CKEDITOR.command.prototype, true );
+CKEDITOR.event.implementOn( CKEDITOR.command.prototype );
 
 /**
  * Indicates the previous command state.
@@ -223,7 +223,7 @@ CKEDITOR.event.implementOn( CKEDITOR.command.prototype, true );
 /**
  * Fired when the command state changes.
  *
- *		command.on( 'state', function( e ) {
+ *		command.on( 'state', function() {
  *			// Alerts the new state.
  *			alert( this.state );
  *		} );

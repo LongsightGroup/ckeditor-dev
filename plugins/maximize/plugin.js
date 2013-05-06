@@ -1,5 +1,5 @@
 ﻿/**
- * @license Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.html or http://ckeditor.com/license
  */
 
@@ -69,6 +69,9 @@
 	}
 
 	function refreshCursor( editor ) {
+		if ( editor.editable().isInline() )
+			return;
+
 		// Refresh all editor instances on the page (#5724).
 		var all = CKEDITOR.instances;
 		for ( var i in all ) {
