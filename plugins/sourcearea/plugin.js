@@ -1,5 +1,5 @@
 ﻿/**
- * @license Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.html or http://ckeditor.com/license
  */
 
@@ -34,14 +34,9 @@
 					},
 					CKEDITOR.tools.cssVendorPrefix( 'tab-size', editor.config.sourceAreaTabSize || 4 ) ) );
 
-				var ariaLabel = [ editor.lang.editor, editor.name ].join( ',' );
-
-				textarea.setAttributes({
-					dir: 'ltr',
-					tabIndex: CKEDITOR.env.webkit ? -1 : editor.tabIndex,
-					'role': 'textbox',
-					'aria-label': ariaLabel
-				});
+				// Make sure that source code is always displayed LTR,
+				// regardless of editor language (#10105).
+				textarea.setAttribute( 'dir', 'ltr' );
 
 				textarea.addClass( 'cke_source cke_reset cke_enable_context_menu' );
 

@@ -1,5 +1,5 @@
 ﻿/**
- * @license Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.html or http://ckeditor.com/license
  */
 
@@ -508,30 +508,6 @@
 		}
 	});
 
-	// Fixing Firefox 'Back-Forward Cache' breaks design mode. (#4514)
-	if ( CKEDITOR.env.gecko ) {
-		(function() {
-			var body = document.body;
-
-			if ( !body )
-				window.addEventListener( 'load', arguments.callee, false );
-			else {
-				var currentHandler = body.getAttribute( 'onpageshow' );
-				body.setAttribute( 'onpageshow', ( currentHandler ? currentHandler + ';' : '' ) + 'event.persisted&&(function(){' +
-					'var x=CKEDITOR.instances,d,i;' +
-					'for(i in x){' +
-						'd=x[i].document;' +
-						'if(d){' +
-							'd.$.designMode="off";' +
-							'd.$.designMode="on";' +
-						'}' +
-					'}' +
-					'})();' );
-			}
-		})();
-
-	}
-
 	// DOM modification here should not bother dirty flag.(#4385)
 	function restoreDirty( editor ) {
 		if ( !editor.checkDirty() )
@@ -697,5 +673,6 @@ CKEDITOR.config.contentsCss = CKEDITOR.basePath + 'contents.css';
  *
  * @event ariaWidget
  * @member CKEDITOR.editor
- * @param {Object} element The element being added
+ * @param {CKEDITOR.editor} editor This editor instance.
+ * @param {CKEDITOR.dom.element} data The element being added.
  */

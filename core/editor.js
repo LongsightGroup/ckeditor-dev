@@ -1,5 +1,5 @@
 ﻿/**
- * @license Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.html or http://ckeditor.com/license
  */
 
@@ -351,7 +351,7 @@
 			 *
 			 *		alert( editor.lang.basicstyles.bold ); // e.g. 'Negrito' (if the language is set to Portuguese)
 			 *
-			 * @property {CKEDITOR.lang} lang
+			 * @property {Object} lang
 			 */
 			// As we'll be adding plugin specific entries that could come
 			// from different language code files, we need a copy of lang,
@@ -412,6 +412,11 @@
 			 * editor instance.
 			 *
 			 *		alert( editor.plugins.dialog.path ); // e.g. 'http://example.com/ckeditor/plugins/dialog/'
+			 *
+			 *		// Check if a plugin is available.
+			 *		if ( editor.plugins.image ) {
+			 *			...
+			 *		}
 			 *
 			 * @property {Object}
 			 */
@@ -899,6 +904,19 @@
 		 *			[ CKEDITOR.SHIFT + 120, 'bold' ]
 		 *		] );
 		 *
+		 * This method may be used in the following cases:
+		 *
+		 * * By plugins (like `link` or `basicstyles`) to set their keystrokes when plugins are being loaded.
+		 * * During the runtime to modify existing keystrokes.
+		 *
+		 * The editor handles keystroke configuration in the following order:
+		 *
+		 * 1. Plugins use this method to define default keystrokes.
+		 * 2. Editor extends default keystrokes with {@link CKEDITOR.config#keystrokes}.
+		 * 3. Editor blocks keystrokes defined in {@link CKEDITOR.config#blockedKeystrokes}.
+		 *
+		 * After all, you can still set new keystrokes using this method during the runtime.
+		 *
 		 * @since 4.0
 		 * @param {Number/Array} keystroke Keystroke or an array of keystroke definitions.
 		 * @param {String/Boolean} [behavior] A command to be executed on the keystroke.
@@ -1047,6 +1065,7 @@ CKEDITOR.ELEMENT_MODE_INLINE = 3;
 
 /**
  * Fired when a CKEDITOR instance is created, fully initialized and ready for interaction.
+ *
  * @event instanceReady
  * @member CKEDITOR
  * @param {CKEDITOR.editor} editor The editor instance that has been created.
@@ -1072,7 +1091,7 @@ CKEDITOR.ELEMENT_MODE_INLINE = 3;
  *
  * @event beforeCommandExec
  * @param {CKEDITOR.editor} editor This editor instance.
- * @param {Object} data
+ * @param data
  * @param {String} data.name The command name.
  * @param {Object} data.commandData The data to be sent to the command. This
  * can be manipulated by the event listener.
@@ -1084,7 +1103,7 @@ CKEDITOR.ELEMENT_MODE_INLINE = 3;
  *
  * @event afterCommandExec
  * @param {CKEDITOR.editor} editor This editor instance.
- * @param {Object} data
+ * @param data
  * @param {String} data.name The command name.
  * @param {Object} data.commandData The data sent to the command.
  * @param {CKEDITOR.command} data.command The command itself.
@@ -1098,7 +1117,7 @@ CKEDITOR.ELEMENT_MODE_INLINE = 3;
  * Custom configuration files can be loaded thorugh the
  * {@link CKEDITOR.config#customConfig} setting. Several files can be loaded
  * by changing this setting.
-
+ *
  * @event customConfigLoaded
  * @param {CKEDITOR.editor} editor This editor instance.
  */
@@ -1116,24 +1135,29 @@ CKEDITOR.ELEMENT_MODE_INLINE = 3;
  * in any plugin.
  *
  * @event destroy
+ * @param {CKEDITOR.editor} editor This editor instance.
  */
 
 /**
  * Internal event to get the current data.
  *
  * @event beforeGetData
+ * @param {CKEDITOR.editor} editor This editor instance.
  */
 
 /**
  * Internal event to perform the {@link #method-getSnapshot} call.
  *
  * @event getSnapshot
+ * @param {CKEDITOR.editor} editor This editor instance.
  */
 
 /**
  * Internal event to perform the {@link #method-loadSnapshot} call.
  *
  * @event loadSnapshot
+ * @param {CKEDITOR.editor} editor This editor instance.
+ * @param {String} data The data that will be used.
  */
 
 /**
@@ -1141,7 +1165,7 @@ CKEDITOR.ELEMENT_MODE_INLINE = 3;
  *
  * @event getData
  * @param {CKEDITOR.editor} editor This editor instance.
- * @param {Object} data
+ * @param data
  * @param {String} data.dataValue The data that will be returned.
  */
 
@@ -1150,7 +1174,7 @@ CKEDITOR.ELEMENT_MODE_INLINE = 3;
  *
  * @event setData
  * @param {CKEDITOR.editor} editor This editor instance.
- * @param {Object} data
+ * @param data
  * @param {String} data.dataValue The data that will be used.
  */
 
@@ -1160,7 +1184,7 @@ CKEDITOR.ELEMENT_MODE_INLINE = 3;
  *
  * @event afterSetData
  * @param {CKEDITOR.editor} editor This editor instance.
- * @param {Object} data
+ * @param data
  * @param {String} data.dataValue The data that has been set.
  */
 
@@ -1178,6 +1202,7 @@ CKEDITOR.ELEMENT_MODE_INLINE = 3;
  * and ready for interaction.
  *
  * @event instanceReady
+ * @param {CKEDITOR.editor} editor This editor instance.
  */
 
 /**
@@ -1185,7 +1210,7 @@ CKEDITOR.ELEMENT_MODE_INLINE = 3;
  *
  * @event insertHtml
  * @param {CKEDITOR.editor} editor This editor instance.
- * @param {Object} data
+ * @param data
  * @param {String} data.mode Mode in which data is inserted (see {@link #method-insertHtml}).
  * @param {String} data.dataValue The HTML to insert.
  */
@@ -1195,7 +1220,7 @@ CKEDITOR.ELEMENT_MODE_INLINE = 3;
  *
  * @event insertText
  * @param {CKEDITOR.editor} editor This editor instance.
- * @param {String} text The text to insert.
+ * @param {String} data The text to insert.
  */
 
 /**
@@ -1203,7 +1228,7 @@ CKEDITOR.ELEMENT_MODE_INLINE = 3;
  *
  * @event insertElement
  * @param {CKEDITOR.editor} editor This editor instance.
- * @param {CKEDITOR.dom.element} element The element to insert.
+ * @param {CKEDITOR.dom.element} data The element to insert.
  */
 
 /**
@@ -1220,6 +1245,52 @@ CKEDITOR.ELEMENT_MODE_INLINE = 3;
  *
  * @event template
  * @param {CKEDITOR.editor} editor This editor instance.
- * @param {String} name The template name.
- * @param {String} source The source data for this template.
+ * @param data
+ * @param {String} data.name The template name.
+ * @param {String} data.source The source data for this template.
+ */
+
+/**
+ * Fired when content of the editor (its DOM structure) is ready.
+ * It is similar to native DOMContentLoaded event, but it concerns
+ * editor's content. It is also a first event fired after
+ * {@link CKEDITOR.editable} is initialized.
+ *
+ * This event is particularly important for framed editor, because
+ * on editor initialization and every time data are set
+ * (by {@link CKEDITOR.editor#method-setData}) contents DOM structure
+ * is rebuilt. Thus, e.g. you need to attach DOM events listeners
+ * on editable one more time.
+ *
+ * On inline editor this event is fired only once - when editor
+ * is initialized for the first time. That's because setting
+ * editor's content doesn't cause editable destruction and creation.
+ *
+ * {@link #contentDom} goes along with {@link #contentDomUnload} which
+ * is fired before contents DOM structure is destroyed. This is the
+ * right moment to detach content DOM events listener. Otherwise
+ * browsers like IE or Opera may throw exceptions when accessing
+ * elements from detached document.
+ *
+ * **Note:** {@link CKEDITOR.editable#attachListener} is a convenient
+ * way to attach listeners that will be detached on {@link #contentDomUnload}.
+ *
+ *		editor.on( 'contentDom', function() {
+ *			var editable = editor.editable();
+ *
+ *			editable.attachListener( editable, 'click', function() {
+ *				console.log( 'Editable has been clicked' );
+ *			});
+ *		});
+ *
+ * @event contentDom
+ * @param {CKEDITOR.editor} editor This editor instance.
+ */
+
+/**
+ * Fired before contents DOM structure is destroyed.
+ * See {@link #contentDom} documentation for more details.
+ *
+ * @event contentDomUnload
+ * @param {CKEDITOR.editor} editor This editor instance.
  */

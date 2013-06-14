@@ -1,5 +1,5 @@
 ﻿/**
- * @license Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.html or http://ckeditor.com/license
  */
 
@@ -121,11 +121,11 @@ CKEDITOR.DIALOG_RESIZE_BOTH = 3;
 	var templateSource = '<div class="cke cke_reset_all {editorId} {editorDialogClass}' +
 		'" dir="{langDir}"' +
 		' lang="{langCode}"' +
-		' role="dialog"' +
-		' aria-labelledby="cke_dialog_title_{id}"' +
+		' role="application"' +
 		'>' +
 		'<table class="cke_dialog ' + CKEDITOR.env.cssClass + ' cke_{langDir}"' +
-			' style="position:absolute" role="presentation">' +
+			' aria-labelledby="cke_dialog_title_{id}"' +
+			' style="position:absolute" role="dialog">' +
 			'<tr><td role="presentation">' +
 			'<div class="cke_dialog_body" role="presentation">' +
 				'<div id="cke_dialog_title_{id}" class="cke_dialog_title" role="presentation"></div>' +
@@ -728,6 +728,18 @@ CKEDITOR.DIALOG_RESIZE_BOTH = 3;
 			// browser what is the current situation first.
 			var element = this._.element.getFirst(), rtl = this._.editor.lang.dir == 'rtl';
 			var isFixed = element.getComputedStyle( 'position' ) == 'fixed';
+
+			// (#8888) In some cases of a very small viewport, dialog is incorrectly
+			// positioned in IE7. It also happens that it remains sticky and user cannot
+			// scroll down/up to reveal dialog's content below/above the viewport; this is
+			// cumbersome.
+			// The only way to fix this is to move mouse out of the browser and
+			// go back to see that dialog position is automagically fixed. No events,
+			// no style change - pure magic. This is a IE7 rendering issue, which can be
+			// fixed with dummy style redraw on each move.
+			if ( CKEDITOR.env.ie )
+				element.setStyle( 'zoom', '100%' );
+
 			if ( isFixed && this._.position && this._.position.x == x && this._.position.y == y )
 				return;
 
@@ -1495,7 +1507,7 @@ CKEDITOR.DIALOG_RESIZE_BOTH = 3;
 
 	// "Inherit" (copy actually) from CKEDITOR.event.
 	CKEDITOR.event.implementOn( CKEDITOR.dialog );
-	CKEDITOR.event.implementOn( CKEDITOR.dialog.prototype, true );
+	CKEDITOR.event.implementOn( CKEDITOR.dialog.prototype );
 
 	var defaultDialogDefinition = {
 		resizable: CKEDITOR.DIALOG_RESIZE_BOTH,
@@ -1959,7 +1971,7 @@ CKEDITOR.DIALOG_RESIZE_BOTH = 3;
 						'top:0;' +
 						'width:100%;' +
 						'height: 100%;' +
-						'progid:DXImageTransform.Microsoft.Alpha(opacity=0)">' +
+						'filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0)">' +
 					'</iframe>' );
 			}
 
@@ -2414,6 +2426,11 @@ CKEDITOR.DIALOG_RESIZE_BOTH = 3;
 						if ( elementDefinition && elementDefinition.expand )
 							html.push( 'height:100%;' );
 						html.push( 'width:' + cssLength( width || '100%' ), ';' );
+
+						// (#10123) Temp fix for dialog broken layout in latest webkit.
+						if ( CKEDITOR.env.webkit )
+							html.push( 'float:none;' );
+
 						html.push( '"' );
 						html.push( 'align="', CKEDITOR.tools.htmlEncode(
 						( elementDefinition && elementDefinition.align ) || ( dialog.getParentEditor().lang.dir == 'ltr' ? 'left' : 'right' ) ), '" ' );
@@ -2801,7 +2818,7 @@ CKEDITOR.DIALOG_RESIZE_BOTH = 3;
 		// undo support should dedicate to specific dialog implementation.
 		canUndo: false,
 
-		editorFocus: CKEDITOR.env.ie || CKEDITOR.env.webkit
+		editorFocus: 1
 	};
 
 	(function() {
@@ -3096,8 +3113,9 @@ CKEDITOR.plugins.add( 'dialog', {
  *
  * @event selectPage
  * @member CKEDITOR.dialog
- * @param {String} page The id of the page that it's gonna be selected.
- * @param {String} currentPage The id of the current page.
+ * @param data
+ * @param {String} data.page The id of the page that it's gonna be selected.
+ * @param {String} data.currentPage The id of the current page.
  */
 
 /**
@@ -3105,7 +3123,8 @@ CKEDITOR.plugins.add( 'dialog', {
  *
  * @event cancel
  * @member CKEDITOR.dialog
- * @param {Boolean} hide Whether the event should proceed or not.
+ * @param data
+ * @param {Boolean} data.hide Whether the event should proceed or not.
  */
 
 /**
@@ -3113,7 +3132,8 @@ CKEDITOR.plugins.add( 'dialog', {
  *
  * @event ok
  * @member CKEDITOR.dialog
- * @param {Boolean} hide Whether the event should proceed or not.
+ * @param data
+ * @param {Boolean} data.hide Whether the event should proceed or not.
  */
 
 /**
@@ -3128,6 +3148,7 @@ CKEDITOR.plugins.add( 'dialog', {
  *
  * @event dialogShow
  * @member CKEDITOR.editor
+ * @param {CKEDITOR.editor} editor This editor instance.
  */
 
 /**
@@ -3142,6 +3163,23 @@ CKEDITOR.plugins.add( 'dialog', {
  *
  * @event dialogHide
  * @member CKEDITOR.editor
+ * @param {CKEDITOR.editor} editor This editor instance.
+ */
+
+/**
+ * Fired when a dialog is being resized. The event is fired on
+ * both the {@link CKEDITOR.dialog} object and the dialog instance
+ * since 3.5.3, previously it's available only in the global object.
+ *
+ * @static
+ * @event resize
+ * @member CKEDITOR.dialog
+ * @param data
+ * @param {CKEDITOR.dialog} data.dialog The dialog being resized (if
+ * it's fired on the dialog itself, this parameter isn't sent).
+ * @param {String} data.skin The skin name.
+ * @param {Number} data.width The new width.
+ * @param {Number} data.height The new height.
  */
 
 /**
@@ -3152,9 +3190,7 @@ CKEDITOR.plugins.add( 'dialog', {
  * @since 3.5
  * @event resize
  * @member CKEDITOR.dialog
- * @param {CKEDITOR.dialog} dialog The dialog being resized (if
- * it's fired on the dialog itself, this parameter isn't sent).
- * @param {String} skin The skin name.
- * @param {Number} width The new width.
- * @param {Number} height The new height.
+ * @param data
+ * @param {Number} data.width The new width.
+ * @param {Number} data.height The new height.
  */

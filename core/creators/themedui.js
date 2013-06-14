@@ -1,5 +1,5 @@
 ﻿/**
- * @license Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.html or http://ckeditor.com/license
  */
 
@@ -152,6 +152,9 @@ CKEDITOR.replaceClass = 'ckeditor';
 			// Detach the current editable.
 			editor.editable( 0 );
 
+			// Clear up the mode space.
+			editor.ui.space( 'contents' ).setHtml( '' );
+
 			editor.mode = '';
 		}
 
@@ -161,8 +164,6 @@ CKEDITOR.replaceClass = 'ckeditor';
 			editor.mode = newMode;
 
 			if ( isDirty !== undefined ) {
-				// The editor data "may be dirty" after this point.
-				editor.mayBeDirty = true;
 				!isDirty && editor.resetDirty();
 			}
 
@@ -251,6 +252,9 @@ CKEDITOR.replaceClass = 'ckeditor';
 
 		data && editor.setData( data, null, true );
 
+		// Clean during initialization.
+		editor.resetDirty();
+
 		// Once the editor is loaded, start the UI.
 		editor.on( 'loaded', function() {
 			loadTheme( editor );
@@ -259,12 +263,12 @@ CKEDITOR.replaceClass = 'ckeditor';
 				attachToForm( editor );
 
 			editor.setMode( editor.config.startupMode, function() {
+				// Clean on startup.
+				editor.resetDirty();
+
 				// Editor is completely loaded for interaction.
 				editor.fireOnce( 'instanceReady' );
 				CKEDITOR.fire( 'instanceReady', null, editor );
-
-				// Clean on startup.
-				editor.resetDirty();
 			});
 		});
 
@@ -426,9 +430,9 @@ CKEDITOR.config.startupMode = 'wysiwyg';
 
 /**
  * Fired after the editor instance is resized through
- * the {@link CKEDITOR.editor#resize} method.
+ * the {@link CKEDITOR.editor#method-resize} method.
  *
- * @event resisze
+ * @event resize
  */
 
 /**
@@ -444,12 +448,11 @@ CKEDITOR.config.startupMode = 'wysiwyg';
  *
  * @since 3.5.3
  * @event beforeSetMode
- * @param {String} newMode The name of the mode which is about to be set.
+ * @param {String} data The name of the mode which is about to be set.
  */
 
 /**
  * Fired after setting the editing mode. See also {@link #beforeSetMode} and {@link #beforeModeUnload}
  *
  * @event mode
- * @param {String} previousMode The previous mode of the editor.
  */

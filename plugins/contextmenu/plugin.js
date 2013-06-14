@@ -1,5 +1,5 @@
 ﻿/**
- * @license Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.html or http://ckeditor.com/license
  */
 
@@ -18,9 +18,7 @@ CKEDITOR.plugins.add( 'contextmenu', {
 						className: 'cke_menu_panel',
 						attributes: {
 							'aria-label': editor.lang.contextmenu.options
-						},
-						// Hide under toolbar (-1).
-						zIndexOffset: -2
+						}
 					}
 				});
 			},

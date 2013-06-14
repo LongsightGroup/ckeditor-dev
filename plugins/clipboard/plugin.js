@@ -1,5 +1,5 @@
 ﻿/**
- * @license Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.html or http://ckeditor.com/license
  */
 
@@ -133,6 +133,7 @@
 					// Verify for sure and check for nested editor UI parts. (#9675)
 					while ( wrapper.getChildCount() == 1 &&
 							( tmp = wrapper.getFirst() ) &&
+							tmp.type == CKEDITOR.NODE_ELEMENT &&	// Make sure first-child is element.
 							( tmp.hasClass( 'cke_editable' ) || tmp.hasClass( 'cke_contents' ) ) ) {
 						wrapper = editable_wrapper = tmp;
 					}
@@ -476,7 +477,10 @@
 				!preventBeforePasteEvent && fixCut( editor );
 			});
 
-			editable.on( 'mouseup', function() {
+			// Use editor.document instead of editable in non-IEs for observing mouseup
+			// since editable won't fire the event if selection process started within
+			// iframe and ended out of the editor (#9851).
+			editable.attachListener( CKEDITOR.env.ie ? editable : editor.document.getDocumentElement(), 'mouseup', function() {
 				setTimeout( function() {
 					setToolbarStates();
 				}, 0 );
@@ -686,6 +690,8 @@
 					// It's better to paste close to the real paste destination, so inherited styles
 					// (which Webkits will try to compensate by styling span) differs less from the destination's one.
 					editable.append( pastebin );
+					// Style pastebin like .cke_editable, to minimize differences between origin and destination. (#9754)
+					pastebin.addClass( 'cke_editable' );
 					// Compensate position of offsetParent.
 					containerOffset = ( editable.is( 'body' ) ? editable : CKEDITOR.dom.element.get( pastebin.$.offsetParent ) ).getDocumentPosition().y;
 				} else {
@@ -740,8 +746,15 @@
 				} );
 			}
 
+			var scrollTop = CKEDITOR.document.getWindow().getScrollPosition().y;
+
 			// Wait a while and grab the pasted contents.
 			setTimeout( function() {
+				// Restore main window's scroll position which could have been changed
+				// by browser in cases described in #9771.
+				if ( CKEDITOR.env.webkit || CKEDITOR.env.opera )
+					CKEDITOR.document[ CKEDITOR.env.webkit ? 'getBody' : 'getDocumentElement' ]().$.scrollTop = scrollTop;
+
 				// Blur will be fired only on non-native paste. In other case manually remove listener.
 				blurListener && blurListener.removeListener();
 
@@ -891,7 +904,7 @@
 			else {
 				var sel = editor.getSelection(),
 					ranges = sel.getRanges();
-				retval = sel.type != CKEDITOR.SELECTION_NONE && !( ranges.length == 1 && ranges[ 0 ].collapsed );
+				retval = sel.getType() != CKEDITOR.SELECTION_NONE && !( ranges.length == 1 && ranges[ 0 ].collapsed );
 			}
 
 			return retval ? CKEDITOR.TRISTATE_OFF : CKEDITOR.TRISTATE_DISABLED;
@@ -1174,7 +1187,8 @@
  * @since 3.1
  * @event paste
  * @member CKEDITOR.editor
- * @param {Object} data
+ * @param {CKEDITOR.editor} editor This editor instance.
+ * @param data
  * @param {String} data.type Type of data in `data.dataValue`. Usually `html` or `text`, but for listeners
  * with priority less than 6 it may be also `auto`, what means that content type hasn't been recognised yet
  * (this will be done by content type sniffer that listens with priority 6).
@@ -1187,5 +1201,6 @@
  * @private
  * @event pasteDialog
  * @member CKEDITOR.editor
- * @param {Function} [callback] Callback that will be passed to {@link CKEDITOR.editor#openDialog}.
+ * @param {CKEDITOR.editor} editor This editor instance.
+ * @param {Function} [data] Callback that will be passed to {@link CKEDITOR.editor#openDialog}.
  */

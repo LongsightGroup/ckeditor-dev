@@ -1,5 +1,5 @@
 ﻿/**
- * @license Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.html or http://ckeditor.com/license
  */
 
@@ -385,7 +385,7 @@
 								},
 								setup: function( selectedTable ) {
 									var val = selectedTable.getStyle( 'width' );
-									val && this.setValue( val );
+									this.setValue( val );
 								},
 								commit: commitValue
 							}
