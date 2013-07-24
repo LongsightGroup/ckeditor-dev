@@ -1,6 +1,6 @@
 ﻿/**
  * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.html or http://ckeditor.com/license
+ * For licensing, see LICENSE.md or http://ckeditor.com/license
  */
 
 CKEDITOR.plugins.add( 'richcombo', {
@@ -249,14 +249,14 @@ CKEDITOR.plugins.add( 'richcombo', {
 
 					me.setState( CKEDITOR.TRISTATE_ON );
 
-					list.focus( !list.multiSelect && me.getValue() );
-
 					me._.on = 1;
 
 					me.editorFocus && editor.focus();
 
 					if ( me.onOpen )
 						me.onOpen();
+
+					list.focus( !list.multiSelect && me.getValue() );
 				};
 
 				panel.onHide = function( preventOnClose ) {
