@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.md or http://ckeditor.com/license
 */
 CKEDITOR.plugins.setLang( 'docprops', 'pt', {
@@ -19,7 +19,7 @@ CKEDITOR.plugins.setLang( 'docprops', 'pt', {
 	charsetUN: 'Unicode (UTF-8)',
 	charsetWE: 'Europa Ocidental',
 	chooseColor: 'Choose',
-	design: 'Design', // MISSING
+	design: 'Desenho',
 	docTitle: 'Título da Página',
 	docType: 'Tipo de Cabeçalho do Documento',
 	docTypeOther: 'Outro Tipo de Cabeçalho do Documento',
@@ -39,4 +39,4 @@ CKEDITOR.plugins.setLang( 'docprops', 'pt', {
 	title: 'Propriedades do Documento',
 	txtColor: 'Cor do Texto',
 	xhtmlDec: 'Incluir Declarações XHTML'
-});
+} );

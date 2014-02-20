@@ -1,5 +1,5 @@
 ﻿/**
- * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or http://ckeditor.com/license
  */
 
@@ -18,16 +18,9 @@
  * @namespace
  */
 CKEDITOR.lang[ 'pt' ] = {
-	/**
-	 * The language reading direction. Possible values are "rtl" for
-	 * Right-To-Left languages (like Arabic) and "ltr" for Left-To-Right
-	 * languages (like English).
-	 * @default 'ltr'
-	 */
-	dir: 'ltr',
-
 	// ARIA description.
-	editor: 'Editor de Rico Texto',
+	editor: 'Rich Text Editor',
+	editorPanel: 'Painel do Rich Text Editor',
 
 	// Common messages and labels.
 	common: {
@@ -59,7 +52,7 @@ CKEDITOR.lang[ 'pt' ] = {
 		langDirRtl: 'Direita para a Esquerda (DPE)',
 		langCode: 'Código de Idioma',
 		longDescr: 'Descrição Completa do URL',
-		cssClass: 'Classes de Estilo de Folhas Classes',
+		cssClass: 'Classes de Estilo de Folhas',
 		advisoryTitle: 'Título Consultivo',
 		cssStyle: 'Estilo',
 		ok: 'OK',
@@ -75,13 +68,13 @@ CKEDITOR.lang[ 'pt' ] = {
 		options: 'Opções',
 		target: 'Destino',
 		targetNew: 'Nova Janela (_blank)',
-		targetTop: 'Janela superior (_top)',
+		targetTop: 'Janela Superior (_top)',
 		targetSelf: 'Mesma Janela (_self)',
 		targetParent: 'Janela Parente (_parent)',
 		langDirLTR: 'Esquerda para a Direita (EPD)',
 		langDirRTL: 'Direita para a Esquerda (DPE)',
 		styles: 'Estilo',
-		cssClasses: 'Classes de Estilo de Folhas Classes',
+		cssClasses: 'Classes de Estilo de Folhas',
 		width: 'Largura',
 		height: 'Altura',
 		align: 'Alinhamento',

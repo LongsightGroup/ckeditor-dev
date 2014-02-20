@@ -1,13 +1,13 @@
 ﻿/*
-Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.md or http://ckeditor.com/license
 */
 CKEDITOR.plugins.setLang( 'docprops', 'ja', {
 	bgColor: '背景色',
 	bgFixed: 'スクロールしない背景',
 	bgImage: '背景画像 URL',
-	charset: '文字セット符号化',
-	charsetASCII: 'アスキー',
+	charset: '文字コード',
+	charsetASCII: 'ASCII',
 	charsetCE: 'Central European',
 	charsetCR: 'Cyrillic',
 	charsetCT: 'Chinese Traditional (Big5)',
@@ -39,4 +39,4 @@ CKEDITOR.plugins.setLang( 'docprops', 'ja', {
 	title: '文書 プロパティ',
 	txtColor: 'テキスト色',
 	xhtmlDec: 'XHTML宣言をインクルード'
-});
+} );

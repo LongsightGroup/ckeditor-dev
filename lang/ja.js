@@ -1,5 +1,5 @@
 ﻿/**
- * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or http://ckeditor.com/license
  */
 
@@ -18,16 +18,9 @@
  * @namespace
  */
 CKEDITOR.lang[ 'ja' ] = {
-	/**
-	 * The language reading direction. Possible values are "rtl" for
-	 * Right-To-Left languages (like Arabic) and "ltr" for Left-To-Right
-	 * languages (like English).
-	 * @default 'ltr'
-	 */
-	dir: 'ltr',
-
 	// ARIA description.
 	editor: 'リッチテキストエディタ',
+	editorPanel: 'リッチテキストエディタパネル',
 
 	// Common messages and labels.
 	common: {
@@ -35,7 +28,7 @@ CKEDITOR.lang[ 'ja' ] = {
 		// of reading non-English words. So be careful while translating it.
 		editorHelp: 'ヘルプは ALT 0 を押してください',
 
-		browseServer: 'サーバーブラウザー',
+		browseServer: 'サーバブラウザ',
 		url: 'URL',
 		protocol: 'プロトコル',
 		upload: 'アップロード',
@@ -74,10 +67,10 @@ CKEDITOR.lang[ 'ja' ] = {
 		confirmCancel: 'オプション設定を変更しました。ダイアログを閉じてもよろしいでしょうか？',
 		options: 'オプション',
 		target: 'ターゲット',
-		targetNew: '新しいウィンドウ (_空白)',
-		targetTop: '最上部ウィンドウ (_トップ)',
-		targetSelf: '同じウィンドウ (_同一)',
-		targetParent: '親ウィンドウ (_親)',
+		targetNew: '新しいウインドウ (_blank)',
+		targetTop: '最上部ウィンドウ (_top)',
+		targetSelf: '同じウィンドウ (_self)',
+		targetParent: '親ウィンドウ (_parent)',
 		langDirLTR: '左から右 (LTR)',
 		langDirRTL: '右から左 (RTL)',
 		styles: 'スタイル',

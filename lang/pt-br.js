@@ -1,5 +1,5 @@
 ﻿/**
- * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or http://ckeditor.com/license
  */
 
@@ -17,16 +17,9 @@
  * @namespace
  */
 CKEDITOR.lang[ 'pt-br' ] = {
-	/**
-	 * The language reading direction. Possible values are "rtl" for
-	 * Right-To-Left languages (like Arabic) and "ltr" for Left-To-Right
-	 * languages (like English).
-	 * @default 'ltr'
-	 */
-	dir: 'ltr',
-
 	// ARIA description.
-	editor: 'Editor de Texto',
+	editor: 'Editor de Rich Text',
+	editorPanel: 'Painel do editor de Rich Text',
 
 	// Common messages and labels.
 	common: {

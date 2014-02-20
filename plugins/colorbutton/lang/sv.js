@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.md or http://ckeditor.com/license
 */
 CKEDITOR.plugins.setLang( 'colorbutton', 'sv', {
@@ -38,16 +38,16 @@ CKEDITOR.plugins.setLang( 'colorbutton', 'sv', {
 		ADD8E6: 'Ljusblå',
 		DDA0DD: 'Plommon',
 		D3D3D3: 'Ljusgrå',
-		FFF0F5: 'Ljus lavender',
+		FFF0F5: 'Ljus lavendel',
 		FAEBD7: 'Antikvit',
 		FFFFE0: 'Ljusgul',
-		F0FFF0: 'Honung',
+		F0FFF0: 'Honungsdagg',
 		F0FFFF: 'Azurblå',
 		F0F8FF: 'Aliceblå',
-		E6E6FA: 'Lavender',
+		E6E6FA: 'Lavendel',
 		FFF: 'Vit'
 	},
 	more: 'Fler färger...',
 	panelTitle: 'Färger',
 	textColorTitle: 'Textfärg'
-});
+} );

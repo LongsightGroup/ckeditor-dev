@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.html or http://ckeditor.com/license
+ * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or http://ckeditor.com/license
  */
 
 /**
  * @fileOverview Handles the indentation of lists.
  */
 
-(function() {
+( function() {
 	'use strict';
 
 	var isNotWhitespaces = CKEDITOR.dom.walker.whitespaces( true ),
@@ -114,7 +114,7 @@
 			database = this.database,
 			context = this.context;
 
-		function indentList( listNode ) {
+		function indent( listNode ) {
 			// Our starting and ending points of the range might be inside some blocks under a list item...
 			// So before playing with the iterator, we need to expand the block to include the list items.
 			var startContainer = range.startContainer,
@@ -211,9 +211,7 @@
 					while ( ( followingList = followingList.getNext() ) && followingList.is && followingList.getName() in context ) {
 						// IE requires a filler NBSP for nested list inside empty list item,
 						// otherwise the list item will be inaccessiable. (#4476)
-						if ( CKEDITOR.env.ie && !li.getFirst( function( node ) {
-							return isNotWhitespaces( node ) && isNotBookmark( node );
-						} ) )
+						if ( CKEDITOR.env.needsNbspFiller && !li.getFirst( neitherWhitespacesNorBookmark ) )
 							li.append( range.document.createText( '\u00a0' ) );
 
 						li.append( followingList );
@@ -223,11 +221,14 @@
 				}
 			}
 
+			if ( newList )
+				editor.fire( 'contentDomInvalidated' );
+
 			return true;
 		}
 
 		var selection = editor.getSelection(),
-			ranges = selection && selection.getRanges( 1 ),
+			ranges = selection && selection.getRanges(),
 			iterator = ranges.createIterator(),
 			range;
 
@@ -271,7 +272,7 @@
 			}
 
 			if ( nearestListBlock )
-				return indentList( nearestListBlock );
+				return indent( nearestListBlock );
 		}
 		return 0;
 	}
@@ -290,4 +291,8 @@
 	function listItem( node ) {
 		return node.type == CKEDITOR.NODE_ELEMENT && node.is( 'li' );
 	}
-})();
+
+	function neitherWhitespacesNorBookmark( node ) {
+		return isNotWhitespaces( node ) && isNotBookmark( node );
+	}
+} )();
